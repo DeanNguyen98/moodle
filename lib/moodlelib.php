@@ -2620,6 +2620,19 @@ function require_login($courseorid = null, $autologinguest = true, $cm = null, $
         $PAGE->set_course($course);
         $renderer = $PAGE->get_renderer('course');
         $message = $renderer->course_section_cm_unavailable_error_message($cm);
+        //Comprendi code- ADD EXTRA MESSAGE IF USER IS ON TRIAL SUBSCRIPTION
+        $availabilityInfo = $cm->availableinfo;
+        $infoString = 'cancelled';
+        /*
+        if ($availabilityInfo instanceof core_availability_multiple_messages) {
+            $infoString = implode(', ', $availabilityInfo->items);
+        }
+            */
+        if ($infoString === 'cancelled') {
+            $shopLink = '<a href="https://dmlearninglab.com/comprendi-checkout/">HERE</a>';
+            \core\notification::add('You are currently on a trial subscription. Please click ' . $shopLink . ' to purchase the full version of Comprendi.', \core\output\notification::NOTIFY_SUCCESS);
+        }
+        //Comprendi CODE
         redirect(course_get_url($course), $message, null, \core\output\notification::NOTIFY_ERROR);
     }
 
